@@ -1,0 +1,53 @@
+---
+title: "Developing Data Products Week 2 Assignment"
+author: "José Manuel Peñas"
+date: "2018/08/11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE);library(leaflet)
+```
+
+## Overview
+
+This assignment will show a map with the french communes with its population.
+It is going to be used a dataset seen on [r-bloggers](https://www.r-bloggers.com/french-dataset-population-and-gps-coordinates/). They use this data with map library. This assigment will use **leaflet**.   
+
+## Getting & Cleaning data
+
+The csv is dowloaded
+```{r getting}
+if (!file.exists("./data/popfr19752010.csv")) {
+      download.file(
+      "http://freakonometrics.free.fr/popfr19752010.csv","./data/popfr19752010.csv"
+      )
+      
+}
+popfr=read.csv("./data/popfr19752010.csv",header=TRUE, stringsAsFactors = F)
+str(popfr)
+```
+In order to simplify the matter, the only information used will be the commune name,*com_name*, longitud,*long*, lattitude,*lat*, and the population at 2010, *pop_2010*.
+In order to reduce the number of municipalities taken and improving visiblity, all the communes with population lesser than 10.000 inhabitants will be discarded.
+Additionally, a new column will be created that will be the popup text of the map.
+```{r cleaning}
+simple_popfr <- subset(popfr[,c(5,6,7,43)], pop_2010 > 9999)
+simple_popfr$popup <- paste(paste(simple_popfr$com_nom,"<br>"),round(simple_popfr$pop_2010,0))
+ 
+str(simple_popfr)
+dim(simple_popfr)
+```
+Finally, the dataset contain 899 rows.
+
+## French municipalities map
+
+The map shows every French commune over 10.000 population as circles.
+The sizes of them depends on the population. A similar formula of the class slides has been used, tweaking it a little bit to avoid circle overlapping as much as possible.
+Clicking on every circle will show the name and the popolation of the commune as pop-up text.
+Obviously, this has been impossible in large metropolitan areas as Paris.
+
+```{r pressure, message=F}
+simple_popfr %>% leaflet() %>% addTiles()%>% addCircles(weight = 1, radius = sqrt(simple_popfr$pop_2010) * 7, popup =simple_popfr$popup )
+```
+
+

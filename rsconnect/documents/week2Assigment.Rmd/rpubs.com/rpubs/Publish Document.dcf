@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/411684/29f5d3b2ce2544c29b132f615bc52a37
+bundleId: https://api.rpubs.com/api/v1/document/411684/29f5d3b2ce2544c29b132f615bc52a37
+url: http://rpubs.com/jmpenyas/411684
+when: 1534006988.9793
